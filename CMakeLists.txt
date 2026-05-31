@@ -7,16 +7,16 @@ find_package(OpenMP REQUIRED)
 
 include(FetchContent)
 FetchContent_Declare(SFML
-    GIT_REPOSITORY https://github.com/SFML/SFML.git
-    GIT_TAG 3.0.2
-    GIT_SHALLOW ON
-    EXCLUDE_FROM_ALL
-    SYSTEM)
+        GIT_REPOSITORY https://github.com/SFML/SFML.git
+        GIT_TAG 3.0.2
+        GIT_SHALLOW ON
+        EXCLUDE_FROM_ALL
+        SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
 FetchContent_Declare(imgui
         GIT_REPOSITORY https://github.com/ocornut/imgui.git
-        GIT_TAG v1.92.6
+        GIT_TAG v1.91.9b
         GIT_SHALLOW ON)
 FetchContent_MakeAvailable(imgui)
 
@@ -46,6 +46,5 @@ if(OpenMP_CXX_FOUND)
     )
     set_target_properties(main PROPERTIES LINK_FLAGS "${OpenMP_CXX_FLAGS}")
 endif()
-
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT main)
