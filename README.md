@@ -4,7 +4,7 @@
 
 ### 3/30/2026 
 - Visualization!
-- ![Demo](A-star.gif)
+- ![Demo](pathfinding/A-star.gif)
 
 ## About
 
