@@ -4,16 +4,15 @@
 
 #include "Game.h"
 
-
 Game::Game()
-    : window_(sf::VideoMode(sf::Vector2u(1000, 1000)), "Steering Behaviors")
-    , vehicle_(sf::Vector2f(500, 500))
+    : window(sf::VideoMode(sf::Vector2u(1000, 1000)), "Steering Behaviors")
+    , vehicle(sf::Vector2f(500, 500))
 {
 }
 
 void Game::run()
 {
-    while (window_.isOpen())
+    while (window.isOpen())
     {
         processEvents();
         update();
@@ -23,30 +22,29 @@ void Game::run()
 
 void Game::processEvents()
 {
-    while ( const std::optional event = window_.pollEvent() )
+    while ( const std::optional event = window.pollEvent() )
     {
         if (event->is<sf::Event::Closed>())
-            window_.close();
+            window.close();
 
         if (const auto* resizedEvent = event->getIf<sf::Event::Resized>())
         {
             sf::FloatRect visibleArea(sf::Vector2f(0, 0), sf::Vector2f(resizedEvent->size.x, resizedEvent->size.y));
-            window_.setView(sf::View(visibleArea));
+            window.setView(sf::View(visibleArea));
         }
     }
 }
 
 void Game::update()
 {
-    float dt = clock_.restart().asSeconds();
-    vehicle_.update(dt, window_.getSize());
+    float dt = clock.restart().asSeconds();
+    sf::Vector2f steeringForce(50.f, 20.f);
+    vehicle.update(dt, steeringForce, window.getSize());
 }
 
 void Game::render()
 {
-    window_.clear(sf::Color::Black);
-    vehicle_.render(window_);
-    window_.display();
+    window.clear(sf::Color::Black);
+    vehicle.render(window);
+    window.display();
 }
-
-

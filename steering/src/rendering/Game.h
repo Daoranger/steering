@@ -6,8 +6,7 @@
 #define STEERINGBEHAVIORS_GAME_H
 
 #include "SFML/Graphics/RenderWindow.hpp"
-#include "Vehicle.h"
-
+#include "../core/Vehicle.h"
 
 class Game
 {
@@ -20,15 +19,9 @@ private:
     void update();
     void render();
 
-private:
-    sf::RenderWindow window_;
-    sf::Clock clock_;
-    Vehicle vehicle_;
-
-
-
+    sf::RenderWindow window;
+    sf::Clock clock;
+    Vehicle vehicle;
 };
-
-
 
 #endif //STEERINGBEHAVIORS_GAME_H
