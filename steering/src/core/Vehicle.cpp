@@ -12,6 +12,7 @@ Vehicle::Vehicle(sf::Vector2f startPos)
     , maxForce(100.0f)
     , texture("assets/f22.png")
     , sprite(texture)
+    , steeringBehaviors(*this)
 {
 
     sf::Vector2u size = texture.getSize();

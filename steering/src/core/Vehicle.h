@@ -5,10 +5,13 @@
 #ifndef STEERINGBEHAVIORS_VEHICLE_H
 #define STEERINGBEHAVIORS_VEHICLE_H
 
+#include "SteeringBehaviors.h"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Texture.hpp"
 #include "SFML/System/Vector2.hpp"
+
+class SteeringBehaviors;
 
 class Vehicle
 {
@@ -22,6 +25,8 @@ public:
     sf::Vector2f heading() const { return velocity.normalized(); }
     sf::Vector2f side() const { return velocity.perpendicular().normalized(); }
     float speed() const { return velocity.length(); }
+
+    SteeringBehaviors steeringBehaviors;
 
 
     Vehicle(sf::Vector2f startPos);
