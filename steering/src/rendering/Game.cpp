@@ -39,7 +39,7 @@ void Game::update()
 {
     float dt = clock.restart().asSeconds();
     sf::Vector2f target = sf::Vector2f(sf::Mouse::getPosition(window));
-    sf::Vector2f steeringForce = vehicle.steeringBehaviors.seek(target);
+    sf::Vector2f steeringForce = vehicle.steeringBehaviors.arrive(target);
     vehicle.update(dt, steeringForce, window.getSize());
 }
 

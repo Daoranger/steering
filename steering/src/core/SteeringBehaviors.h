@@ -15,6 +15,8 @@ public:
     SteeringBehaviors(const Vehicle& vehicle);
 
     sf::Vector2f seek(sf::Vector2f target) const;
+    sf::Vector2f flee(sf::Vector2f target) const;
+    sf::Vector2f arrive(sf::Vector2f target) const;
 
 private:
     const Vehicle& vehicle_;
