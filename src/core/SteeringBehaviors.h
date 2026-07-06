@@ -21,14 +21,15 @@ public:
     sf::Vector2f evade(const Vehicle& pursuer) const;
     sf::Vector2f wander(float dt);
 
-    float wanderRadius = 30.0f;
-    float wanderDistance = 300.f;
-    float wanderJitter = 100.f;
+    float wanderRadius = 60.0f;
+    float wanderDistance = 100.0f;
+    float wanderJitter = 60.0f;
     sf::Vector2f wanderTarget;
 
 private:
     const Vehicle& vehicle_;
     sf::Vector2f pointToWorldSpace(sf::Vector2f targetLocal);
+
 };
 
 #endif //STEERINGBEHAVIORS_STEERINGBEHAVIORS_H

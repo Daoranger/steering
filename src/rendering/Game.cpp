@@ -48,7 +48,7 @@ void Game::update()
     //sf::Vector2f steeringForceV1 = vehicle1.steeringBehaviors.wander(dt);
     sf::Vector2f steeringForceV1 = sf::Vector2f(100,0);
 
-    sf::Vector2f steeringForceV2 = vehicle2.steeringBehaviors.pursuit(vehicle1);
+    sf::Vector2f steeringForceV2 = vehicle2.steeringBehaviors.wander(dt);
     //sf::Vector2f steeringForceV2 = vehicle2.steeringBehaviors.seek(vehicle1.position);
 
     vehicle1.update(dt, steeringForceV1, window.getSize());

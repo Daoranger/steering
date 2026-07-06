@@ -24,17 +24,11 @@ public:
 
     sf::Vector2f heading() const
     {
-        // guard in-case velocity is zero-vector
-        // normalizing zero-vector is UB
-        if (velocity.lengthSquared() < 1e-6f)
-            return {1.f, 0.f};
-        return velocity.normalized();
+        return heading_;
     }
     sf::Vector2f side() const
     {
-        if (velocity.lengthSquared() < 1e-6f)
-            return {0.f, 1.f};
-        return velocity.perpendicular().normalized();
+        return side_;
     }
     float speed() const { return velocity.length(); }
 
@@ -44,9 +38,9 @@ public:
     void update(float dt, sf::Vector2f steeringForce, sf::Vector2u windowSize);
     void render(sf::RenderWindow& window);
 
-
-
 private:
+    sf::Vector2f heading_ = {1.f, 0.f};
+    sf::Vector2f side_ = {0.f, 1.f};
     sf::Texture texture;
     sf::Sprite sprite;
 };

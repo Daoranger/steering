@@ -49,23 +49,7 @@ sf::Vector2f SteeringBehaviors::pursuit(const Vehicle& evader) const
     // vector from pursuer to evader
     sf::Vector2f toEvader = evader.position - vehicle_.position;
 
-    // pursuer and evader headings give us the directions the two are facing
-    // dot product tell us how align
-    // 1.0: facing exactly same direction (theta = 0 degree)
-    // 0.0: perpendicular direction (theta = 90 degree)
-    //-1.0: facing directly opposite directions (theta = 180 degree)
-    // > 0: mostly same direction
-    // < 0: most opposite direction
     double relativeHeading = vehicle_.heading().dot(evader.heading());
-
-    // first check: checks whether evader is in-front of the pursuer
-    // positive -> evader is ahead, negative -> evade is behind
-
-    // second check: checks whether the two ships are facing almost opposite direction
-
-    // both toEvader and vehicle_.heading are both evectors from pursuer.
-    // so if they point same direction, > 0, evader is in-front
-    // but if they point opposite direction, < 0, evader is behind
     // comment out for now cuz we always them to pursue
     // if ((toEvader.dot(vehicle_.heading()) > 0) && (relativeHeading < -0.95))
     // {
@@ -87,19 +71,13 @@ sf::Vector2f SteeringBehaviors::evade(const Vehicle& pursuer) const
     return flee(pursuer.position + pursuer.velocity * lookAheadTime);
 }
 
-// we always assume the vehicle is at 0,0 facing to the right
 sf::Vector2f SteeringBehaviors::wander(float dt)
 {
     // adding small random displacement to the target
-    wanderTarget += sf::Vector2f(
-        randomClamped() * wanderJitter * dt,
-        randomClamped() * wanderJitter * dt
-        );
+    wanderTarget += sf::Vector2f(randomClamped() * wanderJitter * dt, randomClamped() * wanderJitter * dt);
 
     if (wanderTarget.lengthSquared() > 1e-6f)
         wanderTarget = wanderTarget.normalized() * wanderRadius;
-
-    printf("wanderTarget: %.2f, %.2f\n", wanderTarget.x, wanderTarget.y);
 
     sf::Vector2f targetLocal = wanderTarget + sf::Vector2f(wanderDistance, 0);
     sf::Vector2f targetWorld = pointToWorldSpace(targetLocal);

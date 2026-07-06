@@ -10,8 +10,8 @@ Vehicle::Vehicle(sf::Vector2f startPos)
     : mass(1.0f)
     , position(startPos)
     , velocity(sf::Vector2f(0, 0))
-    , maxSpeed(150.0f)
-    , maxForce(200.0f)
+    , maxSpeed(500.0f)
+    , maxForce(500.0f)
     , texture("assets/f22.png")
     , sprite(texture)
     , steeringBehaviors(*this)
@@ -35,6 +35,9 @@ void Vehicle::update(float dt, sf::Vector2f steeringForce, sf::Vector2u windowSi
     if (speed() > maxSpeed)
         velocity = velocity.normalized() * maxSpeed;
 
+    heading_ = velocity.normalized();
+    side_ = heading_.perpendicular();
+
     position += velocity * dt;
 
     if (position.x > windowSize.x) position.x = 0;
@@ -50,14 +53,26 @@ void Vehicle::render(sf::RenderWindow& window)
     sprite.setRotation(sf::degrees(angle + 90.0f));
     window.draw(sprite);
 
-    // debug: draw wander circle and target
-    // sf::CircleShape circle(steeringBehaviors.wanderRadius);
-    // sf::Vector2f circleCenter = position + heading() * steeringBehaviors.wanderDistance;
-    // circle.setOrigin({steeringBehaviors.wanderRadius, steeringBehaviors.wanderRadius});
-    // circle.setPosition(circleCenter);
-    // circle.setFillColor(sf::Color::Transparent);
-    // circle.setOutlineColor(sf::Color::Yellow);
-    // circle.setOutlineThickness(1.f);
-    // window.draw(circle);
+    sf::CircleShape circle(steeringBehaviors.wanderRadius);
+    sf::Vector2f circleCenter = position + heading() * steeringBehaviors.wanderDistance;
+    circle.setOrigin({steeringBehaviors.wanderRadius, steeringBehaviors.wanderRadius});
+    circle.setPosition(circleCenter);
+    circle.setFillColor(sf::Color::Transparent);
+    circle.setOutlineColor(sf::Color::Yellow);
+    circle.setOutlineThickness(1.f);
+    window.draw(circle);
 
+    // debug: draw small jitter circle, centered at the wander target's world position
+    sf::Vector2f wanderTargetLocal = steeringBehaviors.wanderTarget + sf::Vector2f(steeringBehaviors.wanderDistance, 0);
+    sf::Vector2f wanderTargetWorld = position
+        + heading() * wanderTargetLocal.x
+        + side() * wanderTargetLocal.y;
+
+    sf::CircleShape jitterCircle(steeringBehaviors.wanderJitter);
+    jitterCircle.setOrigin({steeringBehaviors.wanderJitter, steeringBehaviors.wanderJitter});
+    jitterCircle.setPosition(wanderTargetWorld);
+    jitterCircle.setFillColor(sf::Color::Transparent);
+    jitterCircle.setOutlineColor(sf::Color::Cyan);
+    jitterCircle.setOutlineThickness(1.f);
+    window.draw(jitterCircle);
 }
