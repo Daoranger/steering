@@ -19,11 +19,11 @@ public:
     sf::Vector2f arrive(sf::Vector2f target) const;
     sf::Vector2f pursuit(const Vehicle& evader) const;
     sf::Vector2f evade(const Vehicle& pursuer) const;
-    sf::Vector2f wander(float dt);
+    sf::Vector2f wander();
 
-    float wanderRadius = 60.0f;
+    float wanderRadius = 30.0f;
     float wanderDistance = 100.0f;
-    float wanderJitter = 60.0f;
+    float wanderJitter = 1.0f;
     sf::Vector2f wanderTarget;
 
 private:

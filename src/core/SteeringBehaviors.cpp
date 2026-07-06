@@ -71,10 +71,10 @@ sf::Vector2f SteeringBehaviors::evade(const Vehicle& pursuer) const
     return flee(pursuer.position + pursuer.velocity * lookAheadTime);
 }
 
-sf::Vector2f SteeringBehaviors::wander(float dt)
+sf::Vector2f SteeringBehaviors::wander()
 {
     // adding small random displacement to the target
-    wanderTarget += sf::Vector2f(randomClamped() * wanderJitter * dt, randomClamped() * wanderJitter * dt);
+    wanderTarget += sf::Vector2f(randomClamped() * wanderJitter, randomClamped() * wanderJitter);
 
     if (wanderTarget.lengthSquared() > 1e-6f)
         wanderTarget = wanderTarget.normalized() * wanderRadius;
