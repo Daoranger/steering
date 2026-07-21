@@ -2,6 +2,9 @@
 #include "Vehicle.h"
 #include "Utils.h"
 #include <limits>
+#define _USE_MATH_DEFINES
+#include <cmath>
+#include <iostream>
 
 SteeringBehaviors::SteeringBehaviors(Vehicle& vehicle)
     : vehicle_(vehicle)
@@ -156,6 +159,53 @@ sf::Vector2f SteeringBehaviors::obstacleAvoidance(const std::vector<std::unique_
     return vectorToWorldSpace(steeringForce);
 }
 
+sf::Vector2f SteeringBehaviors::wallAvoidance(const std::vector<std::unique_ptr<Wall>>& walls)
+{
+    createFeelers();
+
+    // intersection point values;
+    float distToCurrentIP = 0.0;
+    float distToClosestIP = std::numeric_limits<float>::max();
+
+    // index of vector of walls
+    int closestWall = -1;
+
+    // info on closest intersection point
+    sf::Vector2f steeringForce;
+    sf::Vector2f point;
+    sf::Vector2f closestPoint;
+
+    for (int feelerIndex = 0; feelerIndex < feelers.size(); ++feelerIndex)
+    {
+        for (int wallIndex = 0 ; wallIndex < walls.size(); ++wallIndex)
+        {
+            if (lineIntersection2D(vehicle_.position, feelers[feelerIndex], walls[wallIndex]->startPoint, walls[wallIndex]->endPoint, distToCurrentIP, point))
+            {
+                std::cout << "HIT wall " << wallIndex << " at (" << point.x << ", " << point.y << ")\n";
+                if (distToCurrentIP < distToClosestIP)
+                {
+                    distToClosestIP = distToCurrentIP;
+                    closestWall = wallIndex;
+                    closestPoint = point;
+                }
+            }
+        } // next wall
+
+        // if an intersection point has been detected, calculate a force
+        // that will direct the agent away
+        if (closestWall >= 0)
+        {
+            // calculate distance the projected position of the vehicle will overshoot the wall
+            sf::Vector2f overShoot = feelers[feelerIndex] - closestPoint;
+
+            // create a force in direction of wall normal, with magnitude of the overshoot
+            steeringForce = walls[closestWall]->recalculateNormal() * overShoot.length();
+        }
+    }// next feeler
+
+    return steeringForce;
+}
+
 sf::Vector2f SteeringBehaviors::pointToWorldSpace(sf::Vector2f targetLocal)
 {
     sf::Vector2f heading = vehicle_.heading();
@@ -193,6 +243,36 @@ sf::Vector2f SteeringBehaviors::vectorToWorldSpace(sf::Vector2f vecLocal)
     );
 }
 
+bool SteeringBehaviors::lineIntersection2D(sf::Vector2f a, sf::Vector2f b, sf::Vector2f c, sf::Vector2f d, float& dist,
+    sf::Vector2f& point)
+{
+    float top1 = (d.x - c.x) * (c.y - a.y) - (d.y - c.y) * (c.x - a.x);
+    float top2 = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+    float bot = (d.x - c.x) * (b.y - a.y) - (d.y - c.y) * (b.x - a.x);
+
+    // lines are parallel
+    if (bot == 0)
+    {
+        return false;
+    }
+
+    float alpha = top1 / bot;
+    float beta = top2 / bot;
+
+    // lines intersected
+    if (alpha > 0.0 && alpha < 1.0 && beta > 0.0 && beta < 1.0)
+    {
+        point.x = a.x + alpha * (b.x - a.x);
+        point.y = a.y + alpha * (b.y - a.y);
+
+        dist = sqrtf((point.x - a.x) * (point.x - a.x) + (point.y - a.y) * (point.y -a.y));
+
+        return true;
+    }
+
+    return false;
+}
+
 void SteeringBehaviors::tagObstaclesInRange(const std::vector<std::unique_ptr<Obstacle>>& obstacles, float range)
 {
     float rangeSqrt = range * range;
@@ -209,4 +289,28 @@ void SteeringBehaviors::tagObstaclesInRange(const std::vector<std::unique_ptr<Ob
             obstacle->tag();
         }
     }
+}
+
+void SteeringBehaviors::createFeelers()
+{
+    feelers.clear();
+    sf::Vector2f vehiclePos = vehicle_.position;
+    sf::Vector2f vehicleHeading = vehicle_.heading();
+    sf::Vector2f middle_feeler_end = vehiclePos + (vehicleHeading * middleFeelerLength);
+    sf::Vector2f left_feeler_end = vehiclePos + (rotateVector(vehicleHeading, -45.0f) * sideFeelerLength);
+    sf::Vector2f right_feeler_end = vehiclePos + (rotateVector(vehicleHeading, 45.0f) * sideFeelerLength);
+
+    feelers.push_back(middle_feeler_end);
+    feelers.push_back(left_feeler_end);
+    feelers.push_back(right_feeler_end);
+}
+
+sf::Vector2f SteeringBehaviors::rotateVector(const sf::Vector2f& vector, float angleDegrees)
+{
+    float angleRadians = angleDegrees * (M_PI / 180.0f);
+
+    float x = vector.x * cos(angleRadians) - vector.y * sin(angleRadians);
+    float y = vector.x * sin(angleRadians) + vector.y * cos(angleRadians);
+
+    return sf::Vector2f{x, y};
 }

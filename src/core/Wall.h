@@ -13,8 +13,10 @@ class Wall
 public:
     Wall(sf::Vector2f start, sf::Vector2f end);
     void render(sf::RenderWindow& window);
+    sf::Vector2f recalculateNormal();
     sf::Vector2f startPoint;
     sf::Vector2f endPoint;
+    sf::Vector2f normal;
 };
 
 

@@ -105,4 +105,15 @@ void Vehicle::render(sf::RenderWindow& window)
     // jitterCircle.setOutlineColor(sf::Color::Cyan);
     // jitterCircle.setOutlineThickness(1.f);
     // window.draw(jitterCircle);
+
+    // DEBUG: feelers
+    for (auto& feelerEnd : steeringBehaviors.feelers)
+    {
+        std::array<sf::Vertex, 2> line =
+        {
+            sf::Vertex{position, sf::Color::Yellow},
+            sf::Vertex{feelerEnd, sf::Color::Yellow}
+        };
+        window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
+    }
 }
