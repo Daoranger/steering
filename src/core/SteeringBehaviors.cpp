@@ -181,7 +181,6 @@ sf::Vector2f SteeringBehaviors::wallAvoidance(const std::vector<std::unique_ptr<
         {
             if (lineIntersection2D(vehicle_.position, feelers[feelerIndex], walls[wallIndex]->startPoint, walls[wallIndex]->endPoint, distToCurrentIP, point))
             {
-                std::cout << "HIT wall " << wallIndex << " at (" << point.x << ", " << point.y << ")\n";
                 if (distToCurrentIP < distToClosestIP)
                 {
                     distToClosestIP = distToCurrentIP;

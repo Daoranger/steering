@@ -14,7 +14,7 @@ Game::Game()
     vehicle1.maxSpeed = 300;
     vehicle2.maxSpeed = 200;
 
-    //spawnObstacles(3);
+    spawnObstacles(3);
 
     walls.push_back(std::make_unique<Wall>(
     sf::Vector2f(1200.0f, 700.0f),
@@ -71,7 +71,8 @@ void Game::update()
 
     sf::Vector2f seekForce = vehicle2.steeringBehaviors.seek(target);
     sf::Vector2f wallAvoidForce = vehicle2.steeringBehaviors.wallAvoidance(walls);
-    sf::Vector2f steeringForceV2 = seekForce + wallAvoidForce * 1.5f;
+    sf::Vector2f obstacleAvoidForce = vehicle2.steeringBehaviors.obstacleAvoidance(obstacles);
+    sf::Vector2f steeringForceV2 = seekForce + wallAvoidForce * 1.5f + obstacleAvoidForce * 1.5f;
 
     vehicle1.update(dt, steeringForceV1, window.getSize());
     vehicle2.update(dt, steeringForceV2, window.getSize());
